@@ -1,8 +1,11 @@
+// board= Wemos D1 mini PRO
 
 String softwareName = "9randomSpots";
 String softwareVersion = "1.0.1"; //
 String software = "";
 
+#define MAX_PARAM 40
+#include "credentials.h"
 
 //boot Count
 #include <EEPROM.h>
@@ -17,7 +20,7 @@ WiFiClient  wifi;
 #include <WiFiManager.h> // Version 0.12.0
 #include "FS.h"
 
-#define MAX_PARAM 40
+
 #define MQTT_MAX MQTT_MAX_PACKET_SIZE
 
 char THING_ID[MAX_PARAM];
@@ -27,7 +30,6 @@ String appId = "9RS_";
 #define THING_NAME_DEFAULT ""
 char THING_NAME[MAX_PARAM] = THING_NAME_DEFAULT;
 String s_thingName = "";
-char MQTT_SERVER[MAX_PARAM] = "wmc.marcobrianza.it";
 String s_mqttServer = "";
 
 // name, prompt, default, length
@@ -54,22 +56,23 @@ WiFiClient wifiClient;
 PubSubClient mqttClient(wifiClient);
 int MQTT_PORT = 1883;
 String mqttRoot =   "9randomSpots";
-char* MQTT_PASSWORD = "aieie";
-
+//
 String mqtt_randomColor = "randomColor";
 String mqtt_beat = "beat";
 String mqtt_config = "config";
 String mqtt_brightness = "brightness";
-
+String mqtt_cpm = "cpm";
 
 String mqtt_color = "color";
 
 String mqttPublish_randomColor = "";
 String mqttPublish_beat = "";
+String mqttPublish_cpm = "";
 
 String mqttSubscribe_color = "";
 String mqttSubscribe_config = "";
 String mqttSubscribe_brightness = "";
+
 
 //random color
 const byte SPOTS = 9;
@@ -105,13 +108,9 @@ CRGB leds[NUM_LEDS];
 #define BOOT_TEST_BOARD 4
 #define TEST_TIME 30000
 
-//test connection
-const char* SSID = "colors";
-const char* PASSWORD = "colors01";
 
 //beat
 #define BEAT_INTERVAL 900000 //900000 60000
-
 
 
 // geiger counter data -----------------------------
@@ -185,7 +184,7 @@ void setup() {
 
   mqttPublish_randomColor = mqttRoot + "/" + thingId + "/" + mqtt_randomColor;
   mqttPublish_beat = mqttRoot + "/" + thingId + "/" + mqtt_beat;
-
+  mqttPublish_cpm = mqttRoot + "/" + thingId + "/" + mqtt_cpm;;
 
   setupOTA();
 

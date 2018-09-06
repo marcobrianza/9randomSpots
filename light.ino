@@ -7,6 +7,7 @@ void onRadiationPulse() {
   makeColor();
   drawDots();
   publishRandomColor();
+  publishCpm();
 }
 
 

@@ -8,7 +8,7 @@ void reconnectMQTT() {
     Serial.print("\nAttempting MQTT connection...");
     // Attempt to connect
     wifiClient = WiFiClient(); // workaround to fix reconnection
-    if (mqttClient.connect(THING_ID, THING_ID, MQTT_PASSWORD)) {
+    if (mqttClient.connect(THING_ID, MQTT_USERNAME, MQTT_PASSWORD)) {
       digitalWrite(LED_BUILTIN, HIGH);
       Serial.println("connected\n");
       // ... and resubscribe
@@ -67,7 +67,27 @@ void publishRandomColor() {
 
   char mqttTopicPub[MQTT_MAX];
   mqttPublish_randomColor.toCharArray(mqttTopicPub, mqttPublish_randomColor.length() + 1);
+  int ret = mqttClient.publish(mqttTopicPub, mqttData);
 
+  Serial.print("MQTT message sent: ");
+  Serial.print(mqttTopicPub);
+  Serial.print(" ");
+  Serial.print(mqttData);
+  Serial.print(" result: ");
+  Serial.println(ret);
+}
+
+
+void publishCpm() {
+
+  String cpm = String(radiationWatch.cpm());
+
+  char mqttData[MQTT_MAX];
+  cpm.toCharArray(mqttData, cpm.length() + 1);
+
+  char mqttTopicPub[MQTT_MAX];
+  mqttPublish_cpm.toCharArray(mqttTopicPub, mqttPublish_cpm.length() + 1);
+  
   int ret = mqttClient.publish(mqttTopicPub, mqttData);
 
   Serial.print("MQTT message sent: ");
@@ -187,7 +207,6 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
         int u = httpUpdate(option);
         if (u != HTTP_UPDATE_OK) showAllLeds(64, 64, 0);
       }
-
       Serial.println(command);
       Serial.println(option);
     }
